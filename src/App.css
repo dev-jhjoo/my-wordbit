@@ -4,11 +4,21 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   transition: background-color 0.3s, color 0.3s;
+  touch-action: pan-y;
 }
 
 .app.light {

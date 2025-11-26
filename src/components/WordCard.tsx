@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Word } from '../types';
 
 interface WordCardProps {
@@ -6,21 +6,40 @@ interface WordCardProps {
   onSwipe: (direction: 'left' | 'right') => void;
 }
 
+const extractPartOfSpeech = (text: string): string | undefined => {
+  const match = text.match(/\(([^)]+)\)/);
+  return match ? match[1] : undefined;
+};
+
 export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
   const [showMeaning, setShowMeaning] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [startX, setStartX] = useState(0);
+  const partOfSpeech = word.partOfSpeech ?? extractPartOfSpeech(word.korean);
+  const hasMovedRef = useRef(false);
+
+  useEffect(() => {
+    setShowMeaning(false);
+    setIsDragging(false);
+    setDragOffset(0);
+    setStartX(0);
+    hasMovedRef.current = false;
+  }, [word.id]);
 
   const handleStart = (clientX: number) => {
     setIsDragging(true);
     setStartX(clientX);
+    hasMovedRef.current = false;
   };
 
   const handleMove = (clientX: number) => {
     if (!isDragging) return;
     const offset = clientX - startX;
     setDragOffset(offset);
+    if (Math.abs(offset) > 10) {
+      hasMovedRef.current = true;
+    }
   };
 
   const handleEnd = () => {
@@ -33,6 +52,13 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
 
     setIsDragging(false);
     setDragOffset(0);
+  };
+
+  const handleClick = () => {
+    if (isDragging || hasMovedRef.current) {
+      return;
+    }
+    setShowMeaning(prev => !prev);
   };
 
   const rotation = dragOffset * 0.1;
@@ -54,15 +80,16 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
         onTouchStart={(e) => handleStart(e.touches[0].clientX)}
         onTouchMove={(e) => handleMove(e.touches[0].clientX)}
         onTouchEnd={handleEnd}
-        onClick={() => !isDragging && setShowMeaning(!showMeaning)}
+        onClick={handleClick}
       >
         <div className="word-content">
           <h1 className="word-english">{word.english}</h1>
+          {partOfSpeech && <p className="word-pos">{partOfSpeech}</p>}
           {showMeaning && (
             <p className="word-korean">{word.korean}</p>
           )}
           {!showMeaning && (
-            <p className="word-hint">탭하여 뜻 보기</p>
+            <p className="word-hint">탭탭하여 뜻 보기</p>
           )}
         </div>
       </div>

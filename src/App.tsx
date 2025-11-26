@@ -8,6 +8,7 @@ import { SettingsPage } from './components/SettingsPage';
 import { MenuDrawer } from './components/MenuDrawer';
 import { useWordLearning } from './hooks/useWordLearning';
 import { saveTheme, loadTheme } from './utils/storage';
+import { GoogleAdmobExample } from './components/AdMobSample';
 import './App.css';
 
 function App() {
@@ -59,6 +60,8 @@ function App() {
         isDarkMode={isDarkMode}
         onToggleTheme={toggleTheme}
       />
+
+      <GoogleAdmobExample/>
 
       <main className="app-main">
         {!isCompleted ? (

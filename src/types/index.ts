@@ -2,6 +2,7 @@ export interface Word {
   id: number;
   english: string;
   korean: string;
+  partOfSpeech?: string;
 }
 
 export type WordStatus = 'not-studied' | 'known' | 'unknown' | 'completed';

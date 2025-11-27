@@ -1,10 +1,15 @@
 import { GoogleAdMob } from '@apps-in-toss/web-framework';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 const AD_GROUP_ID = 'ait.live.793e70d19dce43ae';
 
-export function GoogleAdmobExample() {
-  const [adLoadStatus, setAdLoadStatus] = useState<'not_loaded' | 'loaded' | 'failed'>('not_loaded');
+interface GoogleAdmobExampleProps {
+  swipeCount: number;
+}
+
+export function GoogleAdmobExample({ swipeCount }: GoogleAdmobExampleProps) {
+  // const [adLoadStatus, setAdLoadStatus] = useState<'not_loaded' | 'loaded' | 'failed'>('not_loaded');
+  const lastShownSwipeRef = useRef(0);
 
   const loadAd = useCallback(() => {
     const supported = GoogleAdMob.loadAppsInTossAdMob.isSupported?.() === true;
@@ -18,12 +23,12 @@ export function GoogleAdmobExample() {
         console.log(event.type);
         if (event.type === 'loaded') {
           console.log('광고 로드 성공', event.data);
-          setAdLoadStatus('loaded');
+          // setAdLoadStatus('loaded');
         }
       },
       onError: (error) => {
         console.error('광고 불러오기 실패', error);
-        setAdLoadStatus('failed');
+        // setAdLoadStatus('failed');
       },
     });
     return cleanup;
@@ -39,7 +44,6 @@ export function GoogleAdmobExample() {
         switch (event.type) {
           case 'requested':
             console.log('광고 보여주기 요청 완료');
-            setAdLoadStatus('not_loaded');
             break;
           case 'clicked':
             console.log('광고 클릭');
@@ -68,18 +72,20 @@ export function GoogleAdmobExample() {
     });
   }, []);
 
-  return (
-    <div>
-      {adLoadStatus === 'not_loaded' && '광고 로드 하지 않음 '}
-      {adLoadStatus === 'loaded' && '광고 로드 완료'}
-      {adLoadStatus === 'failed' && '광고 로드 실패'}
+  useEffect(() => {
+    const cleanup = loadAd();
+    return cleanup;
+  }, [loadAd]);
 
-      <button title="Load Ad" onClick={loadAd}>
-        광고 로드
-      </button>
-      <button title="Show Ad" onClick={showAd} disabled={adLoadStatus !== 'loaded'}>
-        광고 보여주기
-      </button>
-    </div>
-  );
+  useEffect(() => {
+    if (swipeCount === 0) return;
+    if (swipeCount % 10 !== 0) return;
+    if (swipeCount === lastShownSwipeRef.current) return;
+
+    lastShownSwipeRef.current = swipeCount;
+    showAd();
+    loadAd();
+  }, [swipeCount, showAd, loadAd]);
+
+  return null;
 }

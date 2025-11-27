@@ -17,6 +17,7 @@ function App() {
   const [showWordListPage, setShowWordListPage] = useState(false);
   const [showSettingsPage, setShowSettingsPage] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [swipeCount, setSwipeCount] = useState(0);
   const {
     currentWord,
     progress,
@@ -34,6 +35,11 @@ function App() {
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
+  };
+
+  const handleSwipeWithAd = (direction: 'left' | 'right') => {
+    handleSwipe(direction);
+    setSwipeCount(prev => prev + 1);
   };
 
   return (
@@ -61,7 +67,7 @@ function App() {
         onToggleTheme={toggleTheme}
       />
 
-      <GoogleAdmobExample/>
+      <GoogleAdmobExample swipeCount={swipeCount} />
 
       <main className="app-main">
         {!isCompleted ? (
@@ -75,7 +81,7 @@ function App() {
             {currentWord && (
               <WordCard
                 word={currentWord}
-                onSwipe={handleSwipe}
+                onSwipe={handleSwipeWithAd}
               />
             )}
           </>

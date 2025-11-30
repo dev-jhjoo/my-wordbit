@@ -18,6 +18,7 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
   const [startX, setStartX] = useState(0);
   const partOfSpeech = word.partOfSpeech ?? extractPartOfSpeech(word.korean);
   const hasMovedRef = useRef(false);
+  const ignoreMouseRef = useRef(false);
 
   useEffect(() => {
     setShowMeaning(false);
@@ -27,13 +28,15 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
     hasMovedRef.current = false;
   }, [word.id]);
 
-  const handleStart = (clientX: number) => {
+  const handleStart = (clientX: number, isTouch: boolean = false) => {
+    if (!isTouch && ignoreMouseRef.current) return;
     setIsDragging(true);
     setStartX(clientX);
     hasMovedRef.current = false;
   };
 
-  const handleMove = (clientX: number) => {
+  const handleMove = (clientX: number, isTouch: boolean = false) => {
+    if (!isTouch && ignoreMouseRef.current) return;
     if (!isDragging) return;
     const offset = clientX - startX;
     setDragOffset(offset);
@@ -42,7 +45,16 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
     }
   };
 
-  const handleEnd = () => {
+  const handleEnd = (isTouch: boolean = false) => {
+    if (!isTouch && ignoreMouseRef.current) return;
+
+    if (isTouch) {
+      ignoreMouseRef.current = true;
+      setTimeout(() => {
+        ignoreMouseRef.current = false;
+      }, 600);
+    }
+
     if (!isDragging) return;
 
     const threshold = 100;
@@ -54,7 +66,10 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
     setDragOffset(0);
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // 합성된 클릭 이벤트 방지 (터치 후 발생하는 클릭)
+    if (e.detail === 0) return;
+
     if (isDragging || hasMovedRef.current) {
       return;
     }
@@ -73,13 +88,13 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
           opacity: opacity,
           cursor: isDragging ? 'grabbing' : 'grab',
         }}
-        onMouseDown={(e) => handleStart(e.clientX)}
-        onMouseMove={(e) => handleMove(e.clientX)}
-        onMouseUp={handleEnd}
-        onMouseLeave={handleEnd}
-        onTouchStart={(e) => handleStart(e.touches[0].clientX)}
-        onTouchMove={(e) => handleMove(e.touches[0].clientX)}
-        onTouchEnd={handleEnd}
+        onMouseDown={(e) => handleStart(e.clientX, false)}
+        onMouseMove={(e) => handleMove(e.clientX, false)}
+        onMouseUp={() => handleEnd(false)}
+        onMouseLeave={() => handleEnd(false)}
+        onTouchStart={(e) => handleStart(e.touches[0].clientX, true)}
+        onTouchMove={(e) => handleMove(e.touches[0].clientX, true)}
+        onTouchEnd={() => handleEnd(true)}
         onClick={handleClick}
       >
         <div className="word-content">
@@ -102,21 +117,6 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
           알아요 →
         </div>
       </div>
-
-      {/* <div className="button-group">
-        <button 
-          className="swipe-button unknown"
-          onClick={() => onSwipe('left')}
-        >
-          모름
-        </button>
-        <button 
-          className="swipe-button known"
-          onClick={() => onSwipe('right')}
-        >
-          알아요
-        </button>
-      </div> */}
     </div>
   );
 };

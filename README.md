@@ -1,6 +1,7 @@
 # 📚 워드비트 (WordBit)
 
-NGSL 1,297개 영어 단어를 효과적으로 학습할 수 있는 React 웹 애플리케이션입니다.
+**Toss App**으로 개발된 NGSL 1,297개 중 중요 600개 영어 단어를 효과적으로 학습할 수 있는 React 웹 애플리케이션입니다.
+`@apps-in-toss/web-framework`와 `Granite`를 기반으로 구축되었습니다.
 
 ## ✨ 주요 기능
 
@@ -27,29 +28,13 @@ NGSL 1,297개 영어 단어를 효과적으로 학습할 수 있는 React 웹 �
 - **진행 상황**: 상세한 학습 통계 확인
 - **반응형 디자인**: 모바일/데스크톱 최적화
 
-## 🎮 사용 방법
-
-1. **단어 학습**
-   - 단어 카드를 탭하여 뜻 확인
-   - 아는 단어 → 오른쪽 스와이프 또는 "알아요" 버튼
-   - 모르는 단어 → 왼쪽 스와이프 또는 "모름" 버튼
-
-2. **메뉴 (☰)**
-   - 단어 목록: 학습한 단어 확인 및 수정
-   - 진행 상황: 상세 통계 확인
-   - 설정: 백업/복원, 데이터 초기화
-   - 테마 변경: 다크/라이트 모드 전환
-
-3. **백업/복원**
-   - 설정 → 백업 파일 내보내기
-   - 다른 기기에서 백업 파일 가져오기
-
 ## 🛠 기술 스택
 
-- **React 19.2.0** + **TypeScript**
-- **Vite** - 빠른 개발 환경
-- **LocalStorage** - 로컬 데이터 저장
-- **NGSL** - New General Service List 1,297 단어
+- **Framework**: `@apps-in-toss/web-framework`
+- **Build Tool**: `Granite` (Vite 기반)
+- **Frontend**: React 19.2.0 + TypeScript
+- **State Management**: LocalStorage (Custom Hooks)
+- **Data**: NGSL (New General Service List) 1,297 단어
 
 ## 🚀 시작하기
 
@@ -61,62 +46,78 @@ npm install
 
 ### 개발 서버 실행
 
+Granite 기반의 개발 서버를 실행합니다.
+
 ```bash
 npm run dev
+# 또는
+granite dev
 ```
 
 ### 빌드
 
+프로젝트를 프로덕션용으로 빌드합니다.
+
 ```bash
 npm run build
+# 또는
+granite build
 ```
 
 ### 프리뷰
+
+빌드된 결과물을 미리 확인합니다.
 
 ```bash
 npm run preview
 ```
 
+## ⚙️ 설정 (Configuration)
+
+`granite.config.ts` 파일에서 앱의 주요 설정을 관리합니다.
+
+```typescript
+export default defineConfig({
+  appName: 'my-wordbit',
+  brand: {
+    displayName: '워드비트', // 앱 이름
+    primaryColor: '#3182F6', // 테마 색상
+    // ...
+  },
+  // ...
+});
+```
+
+## 🚀 배포 (Deployment)
+
+### Toss 플랫폼 배포
+
+Toss App 배포 도구를 사용하여 배포합니다.
+
+```bash
+npm run deploy
+# 또는
+ait deploy
+```
+
+### 기타 정적 호스팅 배포
+
+이 프로젝트는 표준 웹 기술을 사용하므로 Vercel, Netlify, GitHub Pages 등에도 배포 가능합니다.
+`dist` 폴더의 내용을 정적 호스팅 서비스에 업로드하세요.
+
 ## 📁 프로젝트 구조
 
 ```
 src/
-├── components/
-│   ├── WordCard.tsx          # 단어 카드 (스와이프)
-│   ├── ProgressBar.tsx       # 진행률 바
-│   ├── Statistics.tsx        # 완료 통계
-│   ├── ProgressPage.tsx      # 진행 상황 페이지
-│   ├── WordListPage.tsx      # 단어 목록 & 수정
-│   ├── SettingsPage.tsx      # 설정 페이지
-│   └── MenuDrawer.tsx        # 햄버거 메뉴
-├── data/
-│   └── words.ts              # NGSL 1,297개 단어
-├── hooks/
-│   └── useWordLearning.ts    # 학습 로직
-├── types/
-│   └── index.ts              # TypeScript 타입
-├── utils/
-│   └── storage.ts            # 저장/불러오기
-├── App.tsx                   # 메인 앱
-└── App.css                   # 스타일
+├── components/      # UI 컴포넌트
+├── data/            # 단어 데이터 (NGSL)
+├── hooks/           # 커스텀 훅 (학습 로직)
+├── types/           # TypeScript 타입 정의
+├── utils/           # 유틸리티 함수 (스토리지 등)
+├── App.tsx          # 메인 앱 컴포넌트
+└── App.css          # 전역 스타일
+granite.config.ts    # Granite 설정 파일
 ```
-
-## 💡 주요 특징
-
-- ✅ **1,297개 NGSL 단어** - 실제 영어 학습에 필요한 기본 단어
-- ✅ **랜덤 학습** - 매번 다른 순서로 학습
-- ✅ **전체 추적** - 모든 단어의 상태를 정확히 기록
-- ✅ **오프라인 지원** - 인터넷 없이도 사용 가능
-- ✅ **데이터 백업** - JSON 파일로 백업/복원
-- ✅ **모바일 최적화** - 터치 친화적인 UI
-
-## 🚀 배포
-
-이 프로젝트는 정적 사이트로 배포할 수 있습니다:
-- Vercel
-- Netlify
-- GitHub Pages
-- Cloudflare Pages
 
 ## 📝 라이선스
 

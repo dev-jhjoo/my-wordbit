@@ -19,6 +19,7 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
   const partOfSpeech = word.partOfSpeech ?? extractPartOfSpeech(word.korean);
   const hasMovedRef = useRef(false);
   const ignoreMouseRef = useRef(false);
+  const korean = word.korean.replace(partOfSpeech ?? '', '').replace("(", "").replace(")", " ");
 
   useEffect(() => {
     setShowMeaning(false);
@@ -101,7 +102,7 @@ export const WordCard: React.FC<WordCardProps> = ({ word, onSwipe }) => {
           <h1 className="word-english">{word.english}</h1>
           {partOfSpeech && <p className="word-pos">{partOfSpeech}</p>}
           {showMeaning && (
-            <p className="word-korean">{word.korean}</p>
+            <p className="word-korean">{korean}</p>
           )}
           {!showMeaning && (
             <p className="word-hint">탭탭하여 뜻 보기</p>

@@ -8,7 +8,7 @@ import { SettingsPage } from './components/SettingsPage';
 import { MenuDrawer } from './components/MenuDrawer';
 import { useWordLearning } from './hooks/useWordLearning';
 import { saveTheme, loadTheme } from './utils/storage';
-import { GoogleAdmobExample } from './components/AdMobSample';
+// import { GoogleAdmobExample } from './components/AdMobSample';
 import './App.css';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
   const [showWordListPage, setShowWordListPage] = useState(false);
   const [showSettingsPage, setShowSettingsPage] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [swipeCount, setSwipeCount] = useState(0);
+  // const [swipeCount, setSwipeCount] = useState(0);
   const {
     currentWord,
     progress,
@@ -39,7 +39,7 @@ function App() {
 
   const handleSwipeWithAd = (direction: 'left' | 'right') => {
     handleSwipe(direction);
-    setSwipeCount(prev => prev + 1);
+    // setSwipeCount(prev => prev + 1);
   };
 
   return (
@@ -67,7 +67,7 @@ function App() {
         onToggleTheme={toggleTheme}
       />
 
-      <GoogleAdmobExample swipeCount={swipeCount} />
+      {/* <GoogleAdmobExample swipeCount={swipeCount} /> */}
 
       <main className="app-main">
         {!isCompleted ? (
